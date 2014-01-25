@@ -1,0 +1,18 @@
+{
+	"App": {
+		"email": "you@your-site.com",
+		"feed_url": "",
+		"locale": "eng",
+		"status": 1,
+		"tagline": "A CakePHP powered Application.",
+		"theme": "",
+		"timezone": 0,
+		"title": "Common - Test"
+	},
+	"Meta": {
+		"description": "Common - A CakePHP powered Application",
+		"generator": "Common - CakePHP boilerplate",
+		"keywords": "common, Common",
+		"robots": "index, follow"
+	}
+}
