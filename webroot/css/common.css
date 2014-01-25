@@ -1,0 +1,6 @@
+/*
+	Check if URL rewriting is correctly configured.
+	@see home.ctp
+	@see cake.generic.css
+*/
+#url-rewriting-warning { display: none; }
