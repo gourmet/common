@@ -1,6 +1,6 @@
 {
-    "name": "cakephp/common",
-    "description": "CakePHP Common Plugin",
+    "name": "gourmet/common",
+    "description": "Gourmet Common Plugin for rapid CakePHP application development.",
     "type": "cakephp-plugin",
     "keywords": ["cakephp", "gourmet", "common", "plugin"],
     "homepage": "https://github.com/gourmet/common",
