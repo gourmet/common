@@ -270,7 +270,7 @@ class Reveal {
 	public static function reload() {
 		if (empty(self::$_initialState)) {
 
-			foreach (Configure::read('Routing.prefixes') as $prefix) {
+			foreach ((array) Configure::read('Routing.prefixes') as $prefix) {
 				self::addRule('Page.' . $prefix, array('self', '__isPage'), $prefix);
 			}
 
