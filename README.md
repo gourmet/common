@@ -24,7 +24,7 @@ logging scopes, more complete base test case, better app configuration, etc.).
 
 * [Encodable](wiki/Encodable-Behavior): Several encoding methods for storing arrays in model's table.
 
-* [Totalizable](wiki/Totalizable-Behavior): Calculates totals similarly to the [CakePHP][cakephp]'s `counterCache`.
+* [Computable](wiki/Computable-Behavior): Computes total or average similarly to the [CakePHP][cakephp]'s `counterCache`.
 
 ### Helpers
 

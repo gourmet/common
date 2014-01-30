@@ -1,6 +1,6 @@
 <?php
 /**
- * TotalizableBehavior
+ * ComputableBehavior
  *
  * PHP 5
  *
@@ -18,26 +18,44 @@
 App::uses('ModelBehavior', 'Model');
 
 /**
- * Totalizable behavior
+ * Computable behavior
  *
  * @package       Common.Model.Behavior
  */
-class TotalizableBehavior extends ModelBehavior {
+class ComputableBehavior extends ModelBehavior {
 
 /**
  * {@inheritdoc}
  */
 	public $mapMethods = array(
-		'/\b_findTotalized\b/' => '_findTotalized',
+		'/\b_findComputed\b/' => '_findComputed',
 	);
 
 /**
  * Defaults.
  *
+ *  - method string Type of computation. Only `sum` and `average` supported for now.
+ *  - column string Computable field name.
+ *  - result string Computed result's virtual field name.
+ *
  * @var array
  */
 	protected $_defaults = array(
-		'totalQuery' => 'SUM(total)',
+		'method' => 'sum',
+		'column' => 'value',
+		'result' => 'computed',
+	);
+
+/**
+ * Supported computation methods.
+ *
+ * @var array
+ */
+	protected $_methods = array(
+		'average' => 'avg',
+		'avg' => 'avg',
+		'sum' => 'sum',
+		'total' => 'sum',
 	);
 
 /**
@@ -45,12 +63,12 @@ class TotalizableBehavior extends ModelBehavior {
  */
 	public function setup(Model $Model, $config = array()) {
 		if (isset($config[0])) {
-			$config['totalQuery'] = $config[0];
+			$config['column'] = $config[0];
 			unset($config[0]);
 		}
 
 		$this->settings[$Model->alias] = array_merge($this->_defaults, $config);
-		$Model->findMethods['totalized'] = true;
+		$Model->findMethods['computed'] = true;
 	}
 
 /**
@@ -59,7 +77,7 @@ class TotalizableBehavior extends ModelBehavior {
 	public function afterSave(Model $Model, $created) {
 		$foreignKeys = array();
 		foreach ($Model->belongsTo as $parent => $assoc) {
-			if (!empty($assoc['totalCache'])) {
+			if (!empty($assoc['computedCache'])) {
 				$foreignKeys[$parent] = $assoc['foreignKey'];
 			}
 		}
@@ -77,7 +95,7 @@ class TotalizableBehavior extends ModelBehavior {
 
 		$keys = array_merge($Model->data[$Model->alias], array('old' => $old[$Model->alias]));
 
-		$this->updateTotalCache($Model, $keys, $created);
+		$this->updateComputedCache($Model, $keys, $created);
 		return true;
 	}
 
@@ -86,7 +104,7 @@ class TotalizableBehavior extends ModelBehavior {
  */
 	public function afterDelete(Model $Model) {
 		if (!empty($this->__foreignKeys[$Model->alias])) {
-			$this->updateTotalCache($Model, $this->__foreignKeys[$Model->alias]);
+			$this->updateComputedCache($Model, $this->__foreignKeys[$Model->alias]);
 		}
 	}
 
@@ -96,7 +114,7 @@ class TotalizableBehavior extends ModelBehavior {
 	public function beforeDelete(Model $Model, $cascade = true) {
 		if (!empty($Model->belongsTo)) {
 			foreach ($Model->belongsTo as $assoc) {
-				if (empty($assoc['totalCache'])) {
+				if (empty($assoc['computedCache'])) {
 					continue;
 				}
 
@@ -122,40 +140,44 @@ class TotalizableBehavior extends ModelBehavior {
 	}
 
 /**
- * Updates the total cache of belongsTo associations after a save or delete operation.
+ * Updates the computed cache of belongsTo associations after a save or delete operation.
  *
  * @param Model $Model
  * @param array $keys Optional foreign key data, defaults to the information `$this->data`.
  * @param boolean $created True if a new record was created, otherwise only associations with
- *   'totalScope' defined get updated
+ *   'computedScope' defined get updated
  * @return void
  */
-	public function updateTotalCache(Model $Model, $keys = array(), $created = false) {
+	public function updateComputedCache(Model $Model, $keys = array(), $created = false) {
 		$keys = empty($keys) ? $Model->data[$Model->alias] : $keys;
 		$keys['old'] = isset($keys['old']) ? $keys['old'] : array();
 
 		foreach ($Model->belongsTo as $parent => $assoc) {
-			if (empty($assoc['totalCache'])) {
+			if (empty($assoc['computedCache'])) {
 				continue;
 			}
-			if (!is_array($assoc['totalCache'])) {
-				if (isset($assoc['totalScope'])) {
-					$assoc['totalCache'] = array($assoc['totalCache'] => $assoc['totalScope']);
+			if (!is_array($assoc['computedCache'])) {
+				if (isset($assoc['computedScope'])) {
+					$assoc['computedCache'] = array($assoc['computedCache'] => $assoc['computedScope']);
 				} else {
-					$assoc['totalCache'] = array($assoc['totalCache'] => array());
+					$assoc['computedCache'] = array($assoc['computedCache'] => array());
 				}
 			}
 
 			$foreignKey = $assoc['foreignKey'];
 			$fkQuoted = $Model->escapeField($assoc['foreignKey']);
 
-			foreach ($assoc['totalCache'] as $field => $conditions) {
+			foreach ($assoc['computedCache'] as $field => $conditions) {
 				if (!is_string($field)) {
-					$field = Inflector::underscore($Model->alias) . '_total';
+					$field = sprintf('%s_%s_computed'
+						, Inflector::underscore($Model->alias)
+						, $this->_methods[strtolower($this->settings[$Model->alias]['method'])]
+					);
 				}
 				if (!$Model->{$parent}->hasField($field)) {
 					continue;
 				}
+
 				if ($conditions === true) {
 					$conditions = array();
 				} else {
@@ -167,13 +189,15 @@ class TotalizableBehavior extends ModelBehavior {
 				}
 				$recursive = (empty($conditions) ? -1 : 0);
 
+				$computeProp = sprintf('last%sComputation', Inflector::classify($field));
+
 				if (isset($keys['old'][$foreignKey])) {
 					if ($keys['old'][$foreignKey] != $keys[$foreignKey]) {
 						$conditions[$fkQuoted] = $keys['old'][$foreignKey];
-						$total = array_pop(array_pop(array_pop($Model->find('totalized', compact('conditions', 'recursive')))));
+						$Model->{$computeProp} = array_pop(array_pop(array_pop($Model->find('computed', compact('conditions', 'recursive')))));
 
 						$Model->{$parent}->updateAll(
-							array($field => $total),
+							array($field => $Model->{$computeProp}),
 							array($Model->{$parent}->escapeField() => $keys['old'][$foreignKey])
 						);
 					}
@@ -183,10 +207,10 @@ class TotalizableBehavior extends ModelBehavior {
 				if ($recursive === 0) {
 					$conditions = array_merge($conditions, (array)$conditions);
 				}
-				$total = array_pop(array_pop(array_pop($Model->find('totalized', compact('conditions', 'recursive')))));
+				$Model->{$computeProp} = array_pop(array_pop(array_pop($Model->find('computed', compact('conditions', 'recursive')))));
 
 				$Model->{$parent}->updateAll(
-					array($field => $total),
+					array($field => $Model->{$computeProp}),
 					array($Model->{$parent}->escapeField() => $keys[$foreignKey])
 				);
 			}
@@ -194,7 +218,7 @@ class TotalizableBehavior extends ModelBehavior {
 	}
 
 /**
- * Custom method to find total according to the configuration's SQL for the passed query conditions.
+ * Custom find method to compute resultset's computable field.
  *
  * @param Model $model Model to query.
  * @param string $func
@@ -203,12 +227,18 @@ class TotalizableBehavior extends ModelBehavior {
  * @param array $result
  * @return array
  */
-	public function _findTotalized(Model $Model, $func, $state, $query, $result = array()) {
+	public function _findComputed(Model $Model, $func, $state, $query, $result = array()) {
 		if ('after' == $state) {
 			return $result;
 		}
 
-		$query['fields'] = array($this->settings[$Model->alias]['totalQuery'] . ' AS Totalized');
+		$query['fields'] = array(sprintf(
+			'%s(%s) AS %s'
+			, strtoupper($this->_methods[strtolower($this->settings[$Model->alias]['method'])])
+			, $Model->alias . '.' . $this->settings[$Model->alias]['column']
+			, $this->settings[$Model->alias]['result']
+		));
+
 		return $query;
 	}
 

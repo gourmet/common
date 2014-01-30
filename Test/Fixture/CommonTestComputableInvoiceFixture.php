@@ -1,9 +1,9 @@
 <?php
 /**
- * CommonTestTotalizableInvoiceFixture
+ * CommonTestComputableInvoiceFixture
  *
  */
-class CommonTestTotalizableInvoiceFixture extends CakeTestFixture {
+class CommonTestComputableInvoiceFixture extends CakeTestFixture {
 
 /**
  * {@inheritdoc}
