@@ -8,27 +8,50 @@ logging scopes, more complete base test case, better app configuration, etc.).
 
 ## Features
 
-* Easily [extendable using events](wiki/Events).
+* Easily [extendable using events](/gourmet/common/wiki/Events).
 
 * Simplified test writing.
 
 * Advanced application configuration.
 
-* Out of the box support for [other popular CakePHP plugins](wiki/Other-Popular-Plugins).
+* Out of the box support for [other popular CakePHP plugins](/gourmet/common/wiki/Other-Popular-Plugins).
 
 ### Behaviors
 
-* [Authorizable](wiki/Authorizable-Behavior): Simple and easy-to-use model record access management.
+* [Authorizable](/gourmet/common/wiki/Authorizable-Behavior): Controls access to records.
 
-* [Duplicatable](wiki/Duplicatable-Behavior): Duplicates any model record to another model's table.
+* [Commentable](/gourmet/common/wiki/Commentable-Behavior): Adds comments to records.
 
-* [Encodable](wiki/Encodable-Behavior): Several encoding methods for storing arrays in model's table.
+* [Computable](/gourmet/common/wiki/Computable-Behavior): Computes total or average similarly to the [CakePHP][cakephp]'s `counterCache`.
 
-* [Computable](wiki/Computable-Behavior): Computes total or average similarly to the [CakePHP][cakephp]'s `counterCache`.
+* [Confirmable](/gourmet/common/wiki/Confirmable-Behavior): Adds `isConfirmed()` validation rule.
+
+* [Detailable](/gourmet/common/wiki/Detailable-Behavior): Extends any record with extra details.
+
+* [Duplicatable](/gourmet/common/wiki/Duplicatable-Behavior): Duplicates any record to another model's table.
+
+* [Encodable](/gourmet/common/wiki/Encodable-Behavior): Encodes array values in records for storing.
+
+* [Filterable](/gourmet/common/wiki/Filterable-Behavior): Filters out any field from both, the `find()` resultset and `save()` result.
+
+* [Stateable](/gourmet/common/wiki/Stateable-Behavior): Adds `status` type of field to records.
+
+### Components
+
+* [Opauth](/gourmet/common/wiki/Opauth-Component): Adds the missing component from the [CakePHP Opauth](/uzyn/cakephp-opauth) plugin.
+
+* [PersistentValidation](/gourmet/common/wiki/PersistentValidation-Component): Persists validation errors after a redirect.
+
 
 ### Helpers
 
-* [Table](wiki/Table-Helper): Creates table for displaying result sets, with pagination support.
+* [Asset](/gourmet/common/wiki/Asset-Helper): Controls asset inclusions (works well with [AssetCompress](/markstory/asset_compress)).
+
+* [Navigation](/gourmet/common/wiki/Navigation-Helper): Renders navigations.
+
+* [Stateable](/gourmet/common/wiki/Stateable-Helper): Adds `status` type of selection list.
+
+* [Table](/gourmet/common/wiki/Table-Helper): Creates table for displaying result sets, with pagination support.
 
 ## Install
 
