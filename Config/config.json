@@ -18,8 +18,10 @@
 		]
 	},
 	"L10n": {
-		"currency": "CAD",
 		"timezone": "America/Montreal",
+		"language": "eng",
+		"languages": ["eng"],
+		"currency": "CAD",
 		"currencies": {
 			"CAD": {
 				"wholeSymbol": "$",
@@ -27,10 +29,6 @@
 				"zero": "$0.00"
 			}
 		}
-	},
-	"I18n": {
-		"language": "eng",
-		"languages": ["eng"]
 	},
 	"Cache": {
 		"check": false,
