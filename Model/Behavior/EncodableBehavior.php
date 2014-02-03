@@ -64,7 +64,9 @@ class EncodableBehavior extends ModelBehavior {
 					continue;
 				}
 
-				$results[$k][$Model->alias][$field] = $this->decode($Model, $result[$Model->alias][$field]);
+				if ($result[$Model->alias][$field] = $this->decode($Model, $result[$Model->alias][$field])) {
+					$results[$k][$Model->alias][$field] = $result[$Model->alias][$field];
+				}
 			}
 		}
 
