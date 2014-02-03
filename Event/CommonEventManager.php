@@ -206,7 +206,7 @@ class CommonEventManager extends CakeEventManager {
 			$event = new CakeEvent($event, $subject, $data);
 		}
 
-		self::loadListeners($manager)->dispatch($event);
+		$this->loadListeners($manager)->dispatch($event);
 
 		return $event->result;
 	}

@@ -364,7 +364,7 @@ class CommonAppController extends Controller {
  * @return mixed Result of the event.
  */
 	public function triggerEvent($event, $subject = null, $data = null) {
-		return CommonEventManager::trigger($event, $subject, $data, $this->getEventManager());
+		return $this->getEventManager()->trigger($event, $subject, $data);
 	}
 
 /**
