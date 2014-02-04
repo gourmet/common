@@ -162,7 +162,7 @@ class CommonAppController extends Controller {
 		if (!is_file($elementPath)) {
 			$element = $defaults['element'];
 		} else {
-			$element = implode('/', $element);
+			$element = $pluginDot . implode('/', $element);
 		}
 
 		// Redirect URL
