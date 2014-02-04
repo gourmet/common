@@ -44,7 +44,7 @@ class CommonAppControllerTest extends CommonTestCase {
 		$this->Controller->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Controller->Components));
 		$this->Controller->constructClasses();
 		$this->flashMessage = String::insert(
-			$this->Controller->flashMessages['delete.success']['message'],
+			$this->Controller->alertMessages['delete.success']['message'],
 			array('modelName' => 'test'),
 			array('clean' => true)
 		);
@@ -92,7 +92,7 @@ class CommonAppControllerTest extends CommonTestCase {
 		array_walk($plugins, function($plugin) { CakePlugin::load($plugin); });
 	}
 
-	public function testFlash() {
+	public function testAlert() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
@@ -101,10 +101,10 @@ class CommonAppControllerTest extends CommonTestCase {
 				array('level' => 'success', 'plugin' => 'Common', 'code' => 0, 'dismiss' => false)
 			);
 
-		$this->Controller->flash('delete.success');
+		$this->Controller->alert('delete.success');
 	}
 
-	public function testFlashWithException() {
+	public function testAlertWithException() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
@@ -114,23 +114,23 @@ class CommonAppControllerTest extends CommonTestCase {
 
 			);
 
-		$this->Controller->flash(new Exception('Foo'));
+		$this->Controller->alert(new Exception('Foo'));
 	}
 
-	public function testFlashWithCustomMessageAndOptions() {
+	public function testAlertWithCustomMessageAndOptions() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
-				'foo bar',
+				'Foo bar',
 				'Common.alerts/default',
 				array('level' => 'warning', 'plugin' => 'Common', 'code' => 0, 'dismiss' => true, 'foo' => 'bar')
 
 			);
 
-		$this->Controller->flash('foo bar', array('level' => 'warning', 'dismiss' => true, 'foo' => 'bar'));
+		$this->Controller->alert('foo bar', array('level' => 'warning', 'dismiss' => true, 'foo' => 'bar'));
 	}
 
-	public function testFlashWithOverrideOfDefaultOptions() {
+	public function testAlertWithOverrideOfDefaultOptions() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
@@ -140,14 +140,14 @@ class CommonAppControllerTest extends CommonTestCase {
 
 			);
 
-		$this->Controller->flash('delete.success', array('level' => 'warning'));
+		$this->Controller->alert('delete.success', array('level' => 'warning'));
 	}
 
-	public function testFlashWithRedirect() {
+	public function testAlertWithRedirect() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
-				'redirect me',
+				'Redirect me',
 				'Common.alerts/default',
 				array('level' => 'warning', 'plugin' => 'Common', 'code' => 0, 'dismiss' => false)
 			);
@@ -156,14 +156,14 @@ class CommonAppControllerTest extends CommonTestCase {
 			->method('redirect')
 			->with('/');
 
-		$this->Controller->flash('redirect me', array('level' => 'warning', 'redirect' => '/'));
+		$this->Controller->alert('redirect me', array('level' => 'warning', 'redirect' => '/'));
 	}
 
-	public function testFlashWithRedirectToReferer() {
+	public function testAlertWithRedirectToReferer() {
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
 			->with(
-				'redirect me',
+				'Redirect me',
 				'Common.alerts/default',
 				array('level' => 'warning', 'plugin' => 'Common', 'code' => 0, 'dismiss' => false)
 			);
@@ -176,7 +176,7 @@ class CommonAppControllerTest extends CommonTestCase {
 			->method('redirect')
 			->with('/foo/bar');
 
-		$this->Controller->flash('redirect me', array('level' => 'warning', 'redirect' => true));
+		$this->Controller->alert('redirect me', array('level' => 'warning', 'redirect' => true));
 	}
 
 	public function testFlashWithAjax() {
@@ -202,7 +202,7 @@ class CommonAppControllerTest extends CommonTestCase {
 		$this->Controller->Session->expects($this->never())
 			->method('setFlash');
 
-		$this->Controller->flash('delete.success');
+		$this->Controller->alert('delete.success');
 	}
 
 	public function testFlashWithPrefixFromPlugin() {
@@ -216,7 +216,7 @@ class CommonAppControllerTest extends CommonTestCase {
 				array('level' => 'success', 'plugin' => 'TestExample', 'code' => 0, 'dismiss' => false)
 			);
 
-		$this->Controller->flash('delete.success', array('plugin' => 'TestExample'));
+		$this->Controller->alert('delete.success', array('plugin' => 'TestExample'));
 	}
 
 	public function testFlashWithPrefixAndRedirectButMissingViewElement() {
@@ -234,7 +234,7 @@ class CommonAppControllerTest extends CommonTestCase {
 			->method('redirect')
 			->with(array('prefix' => 'member', 'member' => true, 'controller' => 'test'));
 
-		$this->Controller->flash('delete.success', array('plugin' => 'TestExample', 'redirect' => array('controller' => 'test')));
+		$this->Controller->alert('delete.success', array('plugin' => 'TestExample', 'redirect' => array('controller' => 'test')));
 	}
 
 	public function testFlashWithMissingViewElement() {
@@ -246,11 +246,11 @@ class CommonAppControllerTest extends CommonTestCase {
 				array('level' => 'success', 'plugin' => 'Common', 'code' => 0, 'dismiss' => false)
 			);
 
-		$this->Controller->flash('delete.success', array('element' => 'alerts/foo'));
+		$this->Controller->alert('delete.success', array('element' => 'alerts/foo'));
 	}
 
 	public function testFlashFromPredefinedStringNotArray() {
-		$this->Controller->flashMessages['foo.bar'] = 'Foo Bar';
+		$this->Controller->alertMessages['foo.bar'] = 'Foo Bar';
 
 		$this->Controller->Session->expects($this->once())
 			->method('setFlash')
@@ -260,7 +260,7 @@ class CommonAppControllerTest extends CommonTestCase {
 				array('level' => 'success', 'plugin' => 'Common', 'code' => 0, 'dismiss' => false)
 			);
 
-		$this->Controller->flash('foo.bar');
+		$this->Controller->alert('foo.bar');
 	}
 
 	public function testLog() {
