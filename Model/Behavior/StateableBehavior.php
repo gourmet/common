@@ -155,7 +155,7 @@ class StateableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function beforeSave(Model $Model, $options = array()) {
+	public function beforeSave(Model $Model) {
 		if (!empty($Model->id) || !empty($Model->data[$Model->alias][$Model->primaryKey])) {
 			return true;
 		}

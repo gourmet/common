@@ -308,7 +308,8 @@ class Reveal {
 			if (!file_exists($versionPath)) {
 				throw new Exception();
 			}
-			Configure::write($name, trim(array_pop(file($versionPath))));
+			$content = file($versionPath);
+			Configure::write($name, trim(array_pop($content)));
 		}
 
 		return Configure::read($name);

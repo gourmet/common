@@ -27,7 +27,7 @@ class PersistentValidationComponent extends Component {
 /**
  * {@inheritdoc}
  */
-	public function startup($Controller) {
+	public function startup(Controller $Controller) {
 		$validationErrors = $this->Session->read($this->sessionKey);
 		if (empty($validationErrors)) {
 			return;
@@ -63,7 +63,7 @@ class PersistentValidationComponent extends Component {
 /**
  * {@inheritdoc}
  */
-	public function beforeRedirect($Controller, $url, $status = NULL, $exit = true) {
+	public function beforeRedirect(Controller $Controller, $url, $status = NULL, $exit = true) {
 		if (!empty($Controller->uses)) {
 			foreach ($Controller->uses as $modelName) {
 				list(, $modelName) = pluginSplit($modelName);

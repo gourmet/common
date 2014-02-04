@@ -339,7 +339,8 @@ class OpauthComponent extends Component {
 		foreach ($this->mapKeysToFields as $key => $path) {
 			$map[$key] = String::insert($path, compact('model', 'provider'), array('after' => ':'));
 			$value = Hash::get($authData, $key);
-			if (!empty($this->_user[array_pop(explode('.', $map[$key]))]) || empty($value)) {
+			$mappedKey = explode('.', $map[$key]);
+			if (!empty($this->_user[array_pop($mappedKey)]) || empty($value)) {
 				continue;
 			}
 

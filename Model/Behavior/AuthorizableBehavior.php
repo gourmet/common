@@ -253,7 +253,7 @@ class AuthorizableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function afterSave(Model $Model) {
+	public function afterSave(Model $Model, $created) {
 		$this->_cntSkippedAuthorizable($Model);
 	}
 
