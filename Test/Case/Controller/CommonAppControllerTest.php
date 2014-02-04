@@ -40,7 +40,8 @@ class CommonAppControllerTest extends CommonTestCase {
 		);
 
 		$this->Controller->Components = $this->getMock('ComponentCollection', array('init'));
-		$this->Controller->eventManager = $this->getMock('CommonEventManager');
+		$this->Controller->eventManager = $this->getMock('CommonEventManager', array('listPlugins'));
+		$this->Controller->eventManager->expects($this->any())->method('listPlugins')->will($this->returnValue(array()));
 		$this->Controller->Session = $this->getMock('SessionComponent', array('setFlash'), array($this->Controller->Components));
 		$this->Controller->constructClasses();
 		$this->flashMessage = String::insert(
@@ -59,7 +60,8 @@ class CommonAppControllerTest extends CommonTestCase {
 	public function testConstructClasses() {
 		$Controller = new TestCommonAppController(new CakeRequest, new CakeResponse);
 		$Controller->Components = $this->getMock('ComponentCollection', array('init'));
-		$Controller->eventManager = $this->getMock('CommonEventManager');
+		$Controller->eventManager = $this->getMock('CommonEventManager', array('listPlugins', 'dispatch'));
+		$Controller->eventManager->expects($this->any())->method('listPlugins')->will($this->returnValue(array()));
 
 		$Controller->Components->expects($this->once())
 			->method('init');
