@@ -327,7 +327,7 @@ class Common {
 	public static function url($url) {
 		if (
 			is_array($url)
-			|| (is_string($url) && (preg_match('@^' . implode('|', Common::$uriSchemes) . ':@i', $url) || preg_match('@^[#/]@i', $url)))
+			|| (is_string($url) && (preg_match('@^' . implode('|', Common::$uriSchemes) . ':@i', $url) || preg_match('@^#@i', $url)))
 		) {
 			return $url;
 		}
