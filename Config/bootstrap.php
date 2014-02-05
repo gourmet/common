@@ -51,7 +51,7 @@
 		Configure::write('Config.language', Configure::read('L10n.language'));
 		Configure::write('Config.languages', Configure::read('L10n.languages'));
 		if (!defined('DEFAULT_LANGUAGE')) {
-			define('DEFAULT_LANGUAGE', Configure::read('I18n.language'));
+			define('DEFAULT_LANGUAGE', Configure::read('L10n.language'));
 		}
 	}
 
