@@ -20,7 +20,9 @@
 	"L10n": {
 		"timezone": "America/Montreal",
 		"language": "eng",
-		"languages": ["eng"],
+		"languages": {
+			"English": "eng"
+		},
 		"currency": "CAD",
 		"currencies": {
 			"CAD": {
