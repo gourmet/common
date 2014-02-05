@@ -34,7 +34,7 @@ class Reveal {
  * @var array
  * @see  Reveal::is()
  */
-	public static $parametersMatchers = array();
+	public $parametersMatchers = array();
 
 /**
  * Defined rules.
