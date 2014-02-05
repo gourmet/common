@@ -1,16 +1,16 @@
 <?php
 
-App::uses('Model', 'Model');
+App::uses('CommonAppModel', 'Common.Model');
 App::uses('CommonTestCase', 'Common.TestSuite');
 App::uses('TotalizableBehavior', 'Common.Model/Behavior');
 
-class CommonTestStateableUser extends Model {
+class CommonTestStateableUser extends CommonAppModel {
 
 	public $actsAs = array('Common.Stateable' => array('fields' => array('status' => array('active', 'suspended'))));
 
 }
 
-class CommonTestStateableInvoice extends Model {
+class CommonTestStateableInvoice extends CommonAppModel {
 
 	public $actsAs = array(
 		'Common.Stateable' => array(
@@ -35,7 +35,7 @@ class CommonTestStateableInvoice extends Model {
 	);
 }
 
-class CommonTestStateableInvalid extends Model {
+class CommonTestStateableInvalid extends CommonAppModel {
 
 }
 

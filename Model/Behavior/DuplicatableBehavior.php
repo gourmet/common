@@ -99,7 +99,8 @@ class DuplicatableBehavior extends ModelBehavior {
 		}
 
 		foreach ((array) $config['mapFields'] as $field => $path) {
-			$duplicateData[$field] = array_pop(Hash::extract($data, $path));
+			$value = Hash::extract($data, $path);
+			$duplicateData[$field] = array_pop($value);
 			if (
 				!empty($duplicateRecord[$DuplicateModel->alias][$field])
 				&& $duplicateRecord[$DuplicateModel->alias][$field] === $duplicateData[$field]

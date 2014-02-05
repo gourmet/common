@@ -207,7 +207,7 @@ class ComputableBehavior extends ModelBehavior {
 				if ($recursive === 0) {
 					$conditions = array_merge($conditions, (array)$conditions);
 				}
-				$Model->{$computeProp} = array_pop(array_pop(array_pop($Model->find('computed', compact('conditions', 'recursive')))));
+				$Model->{$computeProp} = current(current(current($Model->find('computed', compact('conditions', 'recursive')))));
 
 				$Model->{$parent}->updateAll(
 					array($field => $Model->{$computeProp}),

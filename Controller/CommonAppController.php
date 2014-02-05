@@ -30,6 +30,14 @@ App::uses('DebugTimer', 'DebugKit.Lib');
 class CommonAppController extends Controller {
 
 /**
+ * List of pre-defined alert messages.
+ *
+ * @var array
+ * @see `CommonAppController::alert()`.
+ */
+	public $alertMessages = array();
+
+/**
  * List of breadcrumbs. Associative array where the key is the title
  * and it's associated value is the link and/or options.
  *
@@ -61,14 +69,6 @@ class CommonAppController extends Controller {
 	public $crumbTitles = array();
 
 /**
- * List of pre-defined flash messages.
- *
- * @var array
- * @see `CommonAppController::flash()`.
- */
-	public $flashMessages = array();
-
-/**
  * User-friendly name for the `Controller::$modelClass`.
  *
  * @var string
@@ -83,6 +83,120 @@ class CommonAppController extends Controller {
 
 		// Mark all the `CommonAppController` methods as private for `Controller::__isPrivateAction()`.
 		$this->methods = array_diff($this->methods, get_class_methods('CommonAppController'));
+	}
+
+/**
+ * Create generic alert message to display.
+ *
+ * The method can be used in two ways, using the `AppController::$alertMessages` and setting
+ * up some defaults or direclty passing the message and options.
+ *
+ * Common defaults are set up by the `Controller.alertMessages` event and can be overridden
+ * at anytime before calling this method.
+ *
+ *		// manually
+ *  	$this->alert('foo bar', array('redirect' => true, 'level' => 'warning'));
+ *
+ *		// pre-defined
+ *  	$this->alertMessages['my_message'] = array(
+ *   		'message' => 'foo bar',
+ *     	'redirect' => true, // false, '', array() '/url'
+ *      'level' => 'warning', // success, error etc
+ *    );
+ *
+ *		$this->alert('my_message');
+ *
+ *		// pre-defined with custom level option
+ *  	$this->alert('my_message', array('level' => 'success'));
+ *
+ * @param string $msg The message to show to the user.
+ * @param array $options Array of configuration options.
+ * @return void
+ * @see CommonEventListener::controllerAlertMessages()
+ */
+	public function alert($msg, $options = array()) {
+		$defaults = array(
+			'level' => 'success',
+			'redirect' => false,
+			'plugin' => 'Common',
+			'code' => 0,
+			'element' => 'alerts/default',
+			'dismiss' => false,
+			'key' => 'flash'
+		);
+
+		if ($msg instanceof Exception) {
+			$options = array_merge(array('level' => 'error'), $options);
+			$msg = $msg->getMessage();
+		}
+
+		if (!empty($this->alertMessages[$msg])) {
+			if (!is_array($this->alertMessages[$msg])) {
+				$msg = $this->alertMessages[$msg];
+			} else if (!empty($this->alertMessages[$msg]['message'])) {
+				$options = array_merge($this->alertMessages[$msg], $options);
+				$msg = $options['message'];
+				unset($options['message']);
+			}
+		}
+
+		$insert = array('modelName' => strtolower($this->modelName));
+		$msg = ucfirst(String::insert($msg, array_merge($insert, $options), array('clean' => true)));
+
+		$options = array_merge($defaults, $options);
+		$params = array('code' => $options['code'], 'plugin' => $options['plugin']);
+
+		// View element
+		$element = explode('/', $options['element']);
+		$pluginDot = null;
+		if (!empty($this->params['prefix'])) {
+			array_push($element, $this->params['prefix'] . '_' . array_pop($element));
+		}
+
+		$elementPath = 'View' . DS . 'Elements' . DS . implode('/', $element) . '.ctp';
+		if (!empty($options['plugin']) && CakePlugin::loaded($options['plugin'])) {
+			$elementPath = CakePlugin::path($options['plugin']) . $elementPath;
+			$pluginDot = $options['plugin'] . '.';
+		}
+
+		if (!is_file($elementPath)) {
+			$element = $defaults['element'];
+		} else {
+			$element = $pluginDot . implode('/', $element);
+		}
+
+		// Redirect URL
+		$redirect = $options['redirect'];
+		if (true === $redirect) {
+			$redirect = $this->referer();
+		} else if (
+			!empty($this->params['prefix'])
+			&& is_array($redirect)
+			&& !isset($redirect['prefix'])
+			&& !isset($redirect[$this->params['prefix']])
+		) {
+			$redirect['prefix'] = $this->params['prefix'];
+			$redirect[$this->params['prefix']] = true;
+		}
+
+		$key = $options['key'];
+
+		unset($options['element'], $options['key'], $options['redirect']);
+
+		// Ajax rendering
+		if ($this->request->is('ajax')) {
+			$params['level'] = $options['level'];
+			$params['message'] = $msg;
+			$redirect = !$redirect ? false : Router::url($redirect);
+			$this->set('json', compact('params', 'redirect'));
+			return;
+		}
+
+		// Normal rendering
+		$this->Session->setFlash($msg, $element, $options, $key);
+		if (!empty($redirect)) {
+			$this->redirect($redirect);
+		}
 	}
 
 /**
@@ -241,120 +355,6 @@ class CommonAppController extends Controller {
 	}
 
 /**
- * Create generic flash message to display.
- *
- * The method can be used in two ways, using the `AppController::$flashMessages` and setting
- * up some defaults or direclty passing the message and options.
- *
- * Common defaults are set up by the `Controller.flashMessages` event and can be overridden
- * at anytime before calling this method.
- *
- *		// manually
- *  	$this->flash('foo bar', array('redirect' => true, 'level' => 'warning'));
- *
- *		// pre-defined
- *  	$this->flashMessages['my_message'] = array(
- *   		'message' => 'foo bar',
- *     	'redirect' => true, // false, '', array() '/url'
- *      'level' => 'warning', // success, error etc
- *    );
- *
- *		$this->flash('my_message');
- *
- *		// pre-defined with custom level option
- *  	$this->flash('my_message', array('level' => 'success'));
- *
- * @param string $msg The message to show to the user.
- * @param array $options Array of configuration options.
- * @return void
- * @see CommonEventListener::controllerFlashMessages()
- */
-	public function flash($msg, $options = array()) {
-		$defaults = array(
-			'level' => 'success',
-			'redirect' => false,
-			'plugin' => 'Common',
-			'code' => 0,
-			'element' => 'alerts/default',
-			'dismiss' => false,
-			'key' => 'flash'
-		);
-
-		if ($msg instanceof Exception) {
-			$options = array_merge(array('level' => 'error'), $options);
-			$msg = $msg->getMessage();
-		}
-
-		if (!empty($this->flashMessages[$msg])) {
-			if (!is_array($this->flashMessages[$msg])) {
-				$msg = $this->flashMessages[$msg];
-			} else if (!empty($this->flashMessages[$msg]['message'])) {
-				$options = array_merge($this->flashMessages[$msg], $options);
-				$msg = $options['message'];
-				unset($options['message']);
-			}
-		}
-
-		$insert = array('modelName' => strtolower($this->modelName));
-		$msg = ucfirst(String::insert($msg, array_merge($insert, $options), array('clean' => true)));
-
-		$options = array_merge($defaults, $options);
-		$params = array('code' => $options['code'], 'plugin' => $options['plugin']);
-
-		// View element
-		$element = explode('/', $options['element']);
-		$pluginDot = null;
-		if (!empty($this->params['prefix'])) {
-			array_push($element, $this->params['prefix'] . '_' . array_pop($element));
-		}
-
-		$elementPath = 'View' . DS . 'Elements' . DS . implode('/', $element) . '.ctp';
-		if (!empty($options['plugin']) && CakePlugin::loaded($options['plugin'])) {
-			$elementPath = CakePlugin::path($options['plugin']) . $elementPath;
-			$pluginDot = $options['plugin'] . '.';
-		}
-
-		if (!is_file($elementPath)) {
-			$element = $defaults['element'];
-		} else {
-			$element = implode('/', $element);
-		}
-
-		// Redirect URL
-		$redirect = $options['redirect'];
-		if (true === $redirect) {
-			$redirect = $this->referer();
-		} else if (
-			!empty($this->params['prefix'])
-			&& is_array($redirect)
-			&& !isset($redirect['prefix'])
-			&& !isset($redirect[$this->params['prefix']])
-		) {
-			$redirect['prefix'] = $this->params['prefix'];
-			$redirect[$this->params['prefix']] = true;
-		}
-
-		$key = $options['key'];
-
-		unset($options['element'], $options['key'], $options['redirect']);
-
-		// Ajax rendering
-		if ($this->request->is('ajax')) {
-			$params['level'] = $options['level'];
-			$params['message'] = $msg;
-			$redirect = !$redirect ? false : Router::url($redirect);
-			$this->set('json', compact('params', 'redirect'));
-			return;
-		}
-
-		// Normal rendering
-		$this->Session->setFlash($msg, $element, $options, $key);
-		if (!empty($redirect)) {
-			$this->redirect($redirect);
-		}
-	}
-
-/**
  * Trigger an event using the 'Controller' event manager instance instead of the
  * global one.
  *
@@ -364,7 +364,7 @@ class CommonAppController extends Controller {
  * @return mixed Result of the event.
  */
 	public function triggerEvent($event, $subject = null, $data = null) {
-		return CommonEventManager::trigger($event, $subject, $data, $this->getEventManager());
+		return $this->getEventManager()->trigger($event, $subject, $data);
 	}
 
 /**
@@ -459,9 +459,9 @@ class CommonAppController extends Controller {
 	protected function _create() {
 		if ($this->request->is('post') && !empty($this->data)) {
 			if ($this->{$this->modelClass}->save($this->data)) {
-				return $this->flash('save.success', array('redirect' => true));
+				return $this->alert('save.success', array('redirect' => true));
 			}
-			return $this->flash('save.fail', array('redirect' => true));
+			return $this->alert('save.fail', array('redirect' => true));
 		}
 	}
 
@@ -475,7 +475,7 @@ class CommonAppController extends Controller {
 		try {
 			$result = $this->{$this->modelClass}->edit($id, $this->request->data);
 		} catch (OutOfBoundsException $e) {
-			return $this->flash($e, array('redirect' => $this->referer(array('action' => 'list'), true)));
+			return $this->alert($e, array('redirect' => $this->referer(array('action' => 'list'), true)));
 		}
 
 		$this->request->data = $this->{$this->modelClass}->data;
@@ -485,9 +485,9 @@ class CommonAppController extends Controller {
 		}
 
 		if (false === $result) {
-			$this->flash('save.fail');
+			$this->alert('save.fail');
 		} else if ($this->request->is('put')) {
-			$this->flash('save.success');
+			$this->alert('save.success');
 		}
 	}
 
@@ -518,9 +518,9 @@ class CommonAppController extends Controller {
  */
 	protected function _status($id, $status) {
 		if (!$this->{$this->modelClass}->changeStatus($id, $status)) {
-			return $this->flash('status.fail');
+			return $this->alert('status.fail');
 		}
-		$this->flash('status.success');
+		$this->alert('status.success');
 	}
 
 }

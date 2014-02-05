@@ -97,6 +97,15 @@ class CommonEventManager extends CakeEventManager {
 	}
 
 /**
+ * List all loaded plugins.
+ *
+ * @return array
+ */
+	public function listPlugins() {
+		return CakePlugin::loaded();
+	}
+
+/**
  * Auto-load plugin event listeners.
  *
  * @param CommonEventManager $manager Optional. Instance to use. Defaults to the global instance.
@@ -121,7 +130,7 @@ class CommonEventManager extends CakeEventManager {
 
 		$_this->implementedEvents['Common'] = array_keys($_this->loadedListeners['Common']->implementedEvents());
 
-		foreach (CakePlugin::loaded() as $plugin) {
+		foreach ($_this->listPlugins() as $plugin) {
 			if (isset($_this->loadedListeners[$plugin])) {
 				if (
 					$_this->loadedListeners[$plugin]
@@ -206,7 +215,7 @@ class CommonEventManager extends CakeEventManager {
 			$event = new CakeEvent($event, $subject, $data);
 		}
 
-		self::loadListeners($manager)->dispatch($event);
+		$this->loadListeners($manager)->dispatch($event);
 
 		return $event->result;
 	}

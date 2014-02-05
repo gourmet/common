@@ -37,7 +37,7 @@ class AuthorizableBehaviorTest extends CommonTestCase {
 
 		$data = array(
 			'noGroupMember' => $user,
-			'adminMember' => Hash::merge($user, array('User' => array('is_admin' => true))),
+			'adminMember' => Hash::merge($user, array('User' => array('prefix' => 'admin'))),
 			'singleGroupMember' => Hash::merge(
 				$user,
 				array('User' => array('Company' => array('id' => 1, 'name' => 'Foo Company')))
@@ -64,6 +64,7 @@ class AuthorizableBehaviorTest extends CommonTestCase {
 				'read' => true,
 				'update' => true,
 				'delete' => true,
+				'auth' => 'id'
 			),
 
 			'groups' => array(
@@ -82,7 +83,7 @@ class AuthorizableBehaviorTest extends CommonTestCase {
 			'admin' => array(
 				'allow' => true,
 				'perms' => 'CRUD',
-				'path' => '[is_admin=1]',
+				'path' => '[prefix=admin]',
 				'create' => true,
 				'read' => true,
 				'update' => true,

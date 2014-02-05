@@ -889,7 +889,7 @@ abstract class CommonTestCase extends CakeTestCase {
 		if ((empty($plugins) || true === $plugins) && is_dir($path)) {
 			App::uses('Folder', 'Utility');
 			$Folder = new Folder($path);
-			$plugins = array_shift($Folder->read());
+			$plugins = current($Folder->read());
 		}
 
 		array_walk($plugins, function($plugin) { CakePlugin::load($plugin); });
