@@ -701,7 +701,7 @@ abstract class CommonTestCase extends CakeTestCase {
 			$User->skipAuthorizable(1);
 		}
 
-		$user = array_pop($User->find('first', array(
+		$user = current($User->find('first', array(
 			'conditions' => compact('id'),
 			'recursive' => -1
 		)));
