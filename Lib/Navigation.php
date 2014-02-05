@@ -122,6 +122,10 @@ class Navigation extends Object {
 			return self::$_items;
 		}
 
+		if (is_array($path)) {
+			return self::$_items = $path;
+		}
+
 		if (Hash::check(self::$_items, $path)) {
 			return Hash::extract(self::$_items, $path);
 		}

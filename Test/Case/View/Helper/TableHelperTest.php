@@ -515,7 +515,7 @@ class TableHelperTest extends CommonTestCase {
 		$this->assertEqual($result, $expected);
 
 		$result = $this->Table->replaceTime('[time method="niceShort"]2013-12-15 08:33:09[/time]');
-		$expected = 'Sunday December 15, 08:33';
+		$expected = 'Dec 15th 2013, 08:33';
 		$this->assertEqual($result, $expected);
 	}
 
@@ -610,8 +610,7 @@ TXT
 		);
 
 		$result = $this->Table->renderCell('[time][User.created][/time]', $data);
-		debug($result);die();
-		$expected = 'foo bar..';
+		$expected = CakeTime::nice($data['User']['created']);
 		$this->assertEqual($result, $expected);
 
 		$result = $this->Table->renderCell('[truncate length=9 ellipsis=..][Comment.{n, }.text][/truncate]', $data);
@@ -640,7 +639,7 @@ TXT
 [php] if ("[User.id]" == "1") {
 	echo '
 <div class="btn-group pull-right">
-  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties', 'prefix' => 'landlord', 'landlord' => true), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties'), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
 </div>
 	';
 }[/php]
@@ -650,7 +649,7 @@ TEXT
 <<<TEXT
 
 <div class="btn-group pull-right">
-  <button type="button" class="btn btn-xs btn-default"><a href="/landlord/properties/view/1">Details</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="/properties/view/1">Details</a></button>
 </div>
 \t
 TEXT
@@ -663,8 +662,8 @@ TEXT
 [php] if ("[User.id]" == "1") {
 	echo '
 <div class="btn-group pull-right">
-  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties', 'prefix' => 'landlord', 'landlord' => true), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
-  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties', 'prefix' => 'landlord', 'landlord' => true), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties'), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="[php]return Router::url(array_merge(array('plugin' => null, 'controller' => 'properties'), array("action" => "view", "[User.id]")));[/php]">[__d|dashboard]Details[/__d]</a></button>
 </div>
 	';
 }[/php]
@@ -674,8 +673,8 @@ TEXT
 <<<TEXT
 
 <div class="btn-group pull-right">
-  <button type="button" class="btn btn-xs btn-default"><a href="/landlord/properties/view/1">Details</a></button>
-  <button type="button" class="btn btn-xs btn-default"><a href="/landlord/properties/view/1">Details</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="/properties/view/1">Details</a></button>
+  <button type="button" class="btn btn-xs btn-default"><a href="/properties/view/1">Details</a></button>
 </div>
 \t
 TEXT

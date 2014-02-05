@@ -18,8 +18,9 @@ class CommonAppModelTest extends CommonTestCase {
 
 	public function tearDown() {
 		parent::tearDown();
-		CommonEventManager::flush();
+		$this->Model->getEventManager()->flush();
 		ClassRegistry::flush();
+		unset($this->Model);
 	}
 
 	public function testConstructor() {
@@ -28,7 +29,7 @@ class CommonAppModelTest extends CommonTestCase {
 			return 'Common' != $plugin && is_null(CakePlugin::unload($plugin));
 		});
 
-		CommonEventManager::flush();
+		$this->Model->getEventManager()->flush();
 		ClassRegistry::flush();
 		CakePlugin::load('TestExample');
 		$Model = ClassRegistry::init('TestCommonAppModel');

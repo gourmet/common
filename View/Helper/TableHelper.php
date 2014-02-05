@@ -487,7 +487,8 @@ class TableHelper extends AppHelper {
 				}
 			}
 
-			$replace =
+			App::uses('CakeTime', 'Utility');
+
 			$replace = (empty($matches[2][$i])) ? '' : CakeTime::$method($matches[2][$i], $timezone, $format);
 			$str = str_replace($find, $replace, $str);
 		}

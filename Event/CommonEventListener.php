@@ -89,7 +89,7 @@ class CommonEventListener implements CakeEventListener {
 		}
 
 		// Append new flash messages.
-		$Event->result = Hash::merge((array) $Event->result, array('flashMessages' => array(
+		$Event->result = Hash::merge((array) $Event->result, array('alertMessages' => array(
 			'auth.fail' => array(
 				'message' => __d('common', "Authentication is required. Please log in to continue."),
 				'level' => 'error',

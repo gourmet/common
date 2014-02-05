@@ -192,6 +192,11 @@ class EncoderBehaviorTest extends CommonTestCase {
 		$result = $this->Model->decode($a);
 		$this->assertEqual($result, $expected);
 
+		$a = 'foo';
+		$expected = null;
+		$result = $this->Model->decode($a);
+		$this->assertEqual($result, $expected);
+
 		$a = '';
 		$expected = '';
 		$result = $this->Model->decode($a);
@@ -227,6 +232,7 @@ class EncoderBehaviorTest extends CommonTestCase {
 		$a = array(array('TestUser' => array('data' => '["hello","world"]')));
 		$b = array(array('TestUser' => array('address' => '{"foo":"bar","baz":"long"}')));
 		$c = array(array('TestModel' => array('foo' => 'bar')));
+		$d = array(array('TestUser' => array('address' => 'foo')));
 
 		$expected = array(array('TestUser' => array('data' => array('hello', 'world'))));
 		$result = $this->User->Behaviors->Encodable->afterFind($this->User, $a, true);
@@ -238,6 +244,10 @@ class EncoderBehaviorTest extends CommonTestCase {
 
 		$expected = $c;
 		$result = $this->User->Behaviors->Encodable->afterFind($this->User, $c, true);
+		$this->assertEqual($result, $expected);
+
+		$expected = $d;
+		$result = $this->User->Behaviors->Encodable->afterFind($this->User, $d, true);
 		$this->assertEqual($result, $expected);
 	}
 

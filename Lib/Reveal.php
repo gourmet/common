@@ -308,7 +308,8 @@ class Reveal {
 			if (!file_exists($versionPath)) {
 				throw new Exception();
 			}
-			Configure::write($name, trim(array_pop(file($versionPath))));
+			$content = file($versionPath);
+			Configure::write($name, trim(array_pop($content)));
 		}
 
 		return Configure::read($name);
@@ -454,7 +455,7 @@ class Reveal {
 			$defaultRoute[$params['prefix']] = null;
 		}
 
-		return Router::normalize(array_intersect($params, $defaultRoute)) == $url;
+		return Router::normalize(array_intersect_recursive($params, $defaultRoute)) == $url;
 	}
 
 /**

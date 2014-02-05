@@ -116,8 +116,7 @@ class DetailableBehaviorTest extends CommonTestCase {
 		$this->User->save($data);
 
 		$expected = 2;
-		$result = $this->User->{$detailModel}->find('all', array('conditions' => array('foreign_model' => $this->User->alias, 'foreign_key' => $this->User->id)));
-		debug($result);die();
+		$result = $this->User->{$detailModel}->find('count', array('conditions' => array('foreign_model' => $this->User->alias, 'foreign_key' => $this->User->id)));
 		$this->assertEqual($result, $expected);
 
 		$data = array(
