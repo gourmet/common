@@ -114,16 +114,14 @@ class AuthorizableBehavior extends ModelBehavior {
 				));
 			}
 
-			try {
-				if (!$Model->hasField($config['owner']['path'])) {
-					throw new FatalErrorException(__d(
-						'common',
-						"Missing owner's field '%s' in table '%s'",
-						$config['owner']['path'],
-						$Model->useTable
-					));
-				}
-			} catch (Exception $e) {}
+			if (!$Model->hasField($config['owner']['path'])) {
+				throw new FatalErrorException(__d(
+					'common',
+					"Missing owner's field '%s' in table '%s'",
+					$config['owner']['path'],
+					$Model->useTable
+				));
+			}
 		}
 
 		if (!empty($config['groups']['allow'])) {
