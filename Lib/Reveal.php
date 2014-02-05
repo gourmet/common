@@ -455,7 +455,7 @@ class Reveal {
 			$defaultRoute[$params['prefix']] = null;
 		}
 
-		return Router::normalize(array_intersect($params, $defaultRoute)) == $url;
+		return Router::normalize(array_intersect_recursive($params, $defaultRoute)) == $url;
 	}
 
 /**

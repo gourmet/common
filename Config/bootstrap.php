@@ -132,3 +132,23 @@ if (!function_exists('__t')) {
 		return String::insert($result, $data, $options);
 	}
 }
+
+/**
+ * Recursively computes the intersection of arrays.
+ *
+ * @param $array1 array The array with master values to check.
+ * @param $array2 array An array to compare values against.
+ * @return array
+ */
+if (!function_exists('array_intersect_recursive')) {
+	function array_intersect_recursive($array1, $array2) {
+		$array1 = array_intersect_key($array1, $array2);
+		foreach (array_keys($array1) as $k) {
+			if (!is_array($array1[$k]) || !is_array($array2[$k])) {
+				continue;
+			}
+			$array1[$k] = array_intersect_recursive($array1[$k], $array2[$k]);
+		}
+		return $array1;
+	}
+}
