@@ -275,7 +275,7 @@ abstract class CommonControllerTestCase extends CommonTestCase {
 
 	public function getMockForController($classname, $methods = array(), $args = array(), $options = array(), $components = array(), $models = array()) {
 		if (empty($methods)) {
-			$methods = array('flash', 'redirect', 'referer');
+			$methods = array('alert', 'flash', 'redirect', 'referer');
 		}
 
 		if (empty($args)) {
