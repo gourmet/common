@@ -57,7 +57,7 @@ class ConfirmableBehaviorTest extends CommonTestCase {
 		$this->assertInstanceOf('CakeValidationRule', $result);
 
 		$result = array_keys($ModelValidator->getField('email_confirm')->getRules());
-		$expected = array('notEmpty', 'email', 'unique', 'confirmed');
+		$expected = array('confirmed');
 		$this->assertEqual($result, $expected);
 
 		$this->User->data = array($this->User->alias => array(

@@ -96,7 +96,11 @@ class CommonAppHelperTest extends CommonTestCase {
 		$expected = '/spa/posts/edit/3';
 		$this->assertEqual($result, $expected);
 
-		$result = $this->Helper->url('/eng/posts/edit/3');
+		$result = $this->Helper->url('#comments');
+		$expected = '#comments';
+		$this->assertEqual($result, $expected);
+
+		$result = $this->Helper->url('/' . DEFAULT_LANGUAGE . '/posts/edit/3');
 		$expected = '/posts/edit/3';
 		$this->assertEqual($result, $expected);
 

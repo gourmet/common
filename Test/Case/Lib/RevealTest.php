@@ -19,6 +19,7 @@ class RevealTest extends CommonTestCase {
 	}
 
 	public function testAddRule() {
+		Reveal::reload();
 		$initialState = Reveal::$rules;
 
 		Reveal::addRule('Foo.bar', array('Foo', 'bar'), 'foo', 'bar');
@@ -68,7 +69,7 @@ class RevealTest extends CommonTestCase {
 
 		$request = new CakeRequest();
 		Router::setRequestInfo($request->addParams(array('prefix' => 'admin', 'admin' => true)));
-		$result = Reveal::is('Page.admin');
+		$result = Reveal::is('Page.prefixed');
 		$this->assertTrue($result);
 
 		Router::reload();

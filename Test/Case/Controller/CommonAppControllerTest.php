@@ -1,6 +1,7 @@
 <?php
 
 App::uses('ComponentCollection', 'Controller');
+App::uses('SessionComponent', 'Controller/Component');
 App::uses('CommonAppController', 'Common.Controller');
 App::uses('CommonTestCase', 'Common.TestSuite');
 
@@ -16,12 +17,21 @@ class TestCommonAppController extends AppController {
 
 	public $eventManager = null;
 
+	public $modelName = 'test';
+
 	public function getEventManager() {
-		return $this->eventManager;
+		if (empty($this->_eventManager)) {
+			$this->_eventManager = $this->eventManager;
+			$this->_eventManager->loadListeners($this->_eventManager, 'Controller');
+			$this->_eventManager->loadListeners($this->_eventManager, $this->name);
+			$this->_eventManager->attach($this->Components);
+			$this->_eventManager->attach($this);
+		}
+		return $this->_eventManager;
 	}
 }
 
-class TestCommonController extends AppController {
+class TestCommonController extends TestCommonAppController {
 	public $name = 'Test';
 }
 
@@ -46,15 +56,15 @@ class CommonAppControllerTest extends CommonTestCase {
 		$this->Controller->constructClasses();
 		$this->flashMessage = String::insert(
 			$this->Controller->alertMessages['delete.success']['message'],
-			array('modelName' => 'test'),
+			array('modelName' => 'Test'),
 			array('clean' => true)
 		);
 	}
 
 	public function tearDown() {
 		parent::tearDown();
-		CommonEventManager::flush();
-		unset($this->Controller);
+		$this->Controller->eventManager->flush();
+		unset($this->Controller, $this->CakeRequest, $this->flashMessage);
 	}
 
 	public function testConstructClasses() {
@@ -77,10 +87,11 @@ class CommonAppControllerTest extends CommonTestCase {
 			return 'Common' != $plugin && is_null(CakePlugin::unload($plugin));
 		});
 
-		CommonEventManager::flush();
+		$this->Controller->eventManager->flush();
 		CakePlugin::load('TestExample');
 		$Controller = new TestCommonAppController(new CakeRequest, new CakeResponse);
 		$Controller->Components = $this->getMock('ComponentCollection', array('init'));
+		$Controller->eventManager = new CommonEventManager();
 		$Controller->constructClasses();
 
 		$result = $Controller->components;
@@ -88,7 +99,7 @@ class CommonAppControllerTest extends CommonTestCase {
 		$this->assertEqual($result, $expected);
 
 		$result = $Controller->helpers;
-		$expected = array('Number' => null, 'TestExample.TestExample' => null);
+		$expected = array('Number' => null, 'TestExample.TestExample' => null, 'Common.Navigation' => null);
 		$this->assertEqual($result, $expected);
 
 		array_walk($plugins, function($plugin) { CakePlugin::load($plugin); });

@@ -3,6 +3,7 @@
 App::uses('Model', 'Model');
 App::uses('Controller', 'Controller');
 App::uses('AuthComponent', 'Controller/Component');
+App::uses('SessionComponent', 'Controller/Component');
 App::uses('FormAuthenticate', 'Controller/Component/Auth');
 App::uses('CommonTestCase', 'Common.TestSuite');
 
@@ -32,7 +33,7 @@ class TestUsersController extends Controller {
 
 	public $uses = array('CommonTestOpauthUser');
 
-	public function render() {
+	public function render($view = null, $layout = null) {
 		$this->request['return'] = false;
 		return $this->response;
 	}
@@ -63,14 +64,16 @@ class OpauthComponentTest extends CommonTestCase {
 		$this->Controller->constructClasses();
 		$this->Controller->Components = $this->getMock('ComponentCollection', array('loaded'));
 		$this->Controller->Auth = $this->getMock('AuthComponent', array('constructAuthenticate', 'login', 'user'), array($this->Controller->Components, $this->Controller->Auth->settings));
+		$this->Controller->Opauth = $this->getMock('OpauthComponent', array('redirectToCompleteRegistration'), array($this->Controller->Components, $this->Controller->components['Common.Opauth']));
 		$this->Controller->Session = $this->getMock('SessionComponent', array('setFlash', 'write'), array($this->Controller->Components));
-		// $this->Controller->View = $this->getMock('View', array('render'), array($this->Controller));
+		Router::connect('/users/register', array('controller' => 'TestUsers', 'action' => 'register'));
 	}
 
 	public function tearDown() {
 		parent::tearDown();
 		Configure::write('Security', $this->_initialState['Security']);
 		Configure::write('Opauth', $this->_initialState['Opauth']);
+		Router::reload();
 		unset($this->Controller);
 	}
 
