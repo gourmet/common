@@ -581,7 +581,10 @@ abstract class CommonTestCase extends CakeTestCase {
 			ClassRegistry::removeObject('CommonLog');
 		}
 
-		ClassRegistry::addObject('CommonLog', $this->getMock('CakeLog', $methods));
+		list($plugin, $className) = pluginSplit($className, $dotAppend = true);
+		App::uses($className, $plugin . 'Log');
+
+		ClassRegistry::addObject('CommonLog', $this->getMock($className, $methods));
 		return ClassRegistry::getObject('CommonLog');
 	}
 
