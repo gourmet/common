@@ -16,6 +16,7 @@
  */
 
 App::uses('CakeTestCase', 'TestSuite');
+App::uses('CommonTestFixture', 'Common.TestSuite/Fixture');
 App::uses('CakeEmail', 'Network/Email');
 App::uses('Validation', 'Utility');
 
