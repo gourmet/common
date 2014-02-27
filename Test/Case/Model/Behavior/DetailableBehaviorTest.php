@@ -29,6 +29,7 @@ class DetailableBehaviorTest extends CommonTestCase {
  * {@inheritdoc}
  */
 	public $fixtures = array(
+		'plugin.common.common_detail_model',
 		'plugin.common.common_test_detailable_user',
 	);
 
@@ -120,7 +121,7 @@ class DetailableBehaviorTest extends CommonTestCase {
 		$this->assertEqual($result, $expected);
 
 		$data = array(
-			$this->User->alias => array('id' => 1),
+			$this->User->alias => array('id' => '1'),
 			$detailModel => array('user' => array('fname' => 'test', 'lname' => 'example'))
 		);
 
