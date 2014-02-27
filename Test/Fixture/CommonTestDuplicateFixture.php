@@ -3,7 +3,7 @@
  * CommonTestDuplicateFixture
  *
  */
-class CommonTestDuplicateFixture extends CakeTestFixture {
+class CommonTestDuplicateFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}

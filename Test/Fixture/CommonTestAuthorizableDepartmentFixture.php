@@ -3,7 +3,7 @@
  * CommonTestAuthorizableDepartmentFixture
  *
  */
-class CommonTestAuthorizableDepartmentFixture extends CakeTestFixture {
+class CommonTestAuthorizableDepartmentFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}

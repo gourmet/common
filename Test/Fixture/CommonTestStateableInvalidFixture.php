@@ -3,7 +3,7 @@
  * CommonTestStateableInvalidFixture
  *
  */
-class CommonTestStateableInvalidFixture extends CakeTestFixture {
+class CommonTestStateableInvalidFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}
