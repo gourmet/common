@@ -3,7 +3,7 @@
  * CommonDetailModelFixture
  *
  */
-class CommonDetailModelFixture extends CakeTestFixture {
+class CommonDetailModelFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}
