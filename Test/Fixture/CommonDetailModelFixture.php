@@ -3,7 +3,7 @@
  * CommonDetailModelFixture
  *
  */
-class CommonDetailModelFixture extends CakeTestFixture {
+class CommonDetailModelFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}
@@ -14,10 +14,10 @@ class CommonDetailModelFixture extends CakeTestFixture {
 		'foreign_model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 36),
 		'position' => array('type' => 'integer', 'null' => false, 'default' => 1000, 'length' => 4),
 		'field' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 255),
-		'value' => array('type' => 'text', 'null' => false, 'default' => NULL),
-		'input' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 16),
-		'data_type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 16),
-		'label' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 128),
+		'value' => array('type' => 'text', 'null' => true, 'default' => NULL),
+		'input' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 16),
+		'data_type' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 16),
+		'label' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 128),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'indexes' => array(

@@ -147,20 +147,21 @@ class CommonAppController extends Controller {
 		$params = array('code' => $options['code'], 'plugin' => $options['plugin']);
 
 		// View element
-		$element = explode('/', $options['element']);
+		$element = $options['element'];
 		if (!empty($this->params['prefix'])) {
+			$element = explode('/', $options['element']);
 			array_push($element, $this->params['prefix'] . '_' . array_pop($element));
+			$element = implode('/', $element);
 		}
-
-		$elementPath = 'View' . DS . 'Elements' . DS . implode('/', $element) . '.ctp';
+	
+		$elementPath = 'View' . DS . 'Elements' . DS . $element . '.ctp';
 		if (!empty($options['plugin']) && CakePlugin::loaded($options['plugin'])) {
+			$element = $options['plugin'] . '.' . $element;
 			$elementPath = CakePlugin::path($options['plugin']) . $elementPath;
 		}
 
 		if (!is_file($elementPath)) {
 			$element = $defaults['element'];
-		} else {
-			$element = implode('/', $element);
 		}
 
 		// Redirect URL

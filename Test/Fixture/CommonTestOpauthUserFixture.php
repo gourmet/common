@@ -3,7 +3,7 @@
  * CommonTestOpauthUserFixture
  *
  */
-class CommonTestOpauthUserFixture extends CakeTestFixture {
+class CommonTestOpauthUserFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}
@@ -16,8 +16,8 @@ class CommonTestOpauthUserFixture extends CakeTestFixture {
 		'password' => array('type' => 'string', 'null' => false, 'default' => NULL),
 		'first_name' => array('type' => 'string', 'null' => false, 'default' => NULL),
 		'last_name' => array('type' => 'string', 'null' => false, 'default' => NULL),
-		'company' => array('type' => 'string', 'null' => false, 'default' => NULL),
-		'gravatar' => array('type' => 'string', 'null' => false, 'default' => NULL),
+		'company' => array('type' => 'string', 'null' => true, 'default' => NULL),
+		'gravatar' => array('type' => 'string', 'null' => true, 'default' => NULL),
 		'created' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => false, 'default' => NULL),
 		'indexes' => array(
@@ -26,19 +26,38 @@ class CommonTestOpauthUserFixture extends CakeTestFixture {
 		),
 	);
 
+/**
+ * {@inheritdoc}
+ */
 	public $records = array(
 		array(
 			'id' => 1,
 			'google_id' => '',
 			'google_credentials' => '',
-			'email' => 'user@example.com',
+			'first_name' => 'User',
+			'last_name' => 'Example',
 		),
 		array(
 			'id' => 2,
 			'google_id' => '',
 			'google_credentials' => '',
-			'email' => 'john@doe.com',
+			'first_name' => 'John',
+			'last_name' => 'Doe',
 		),
 	);
+
+/**
+ * {@inheritdoc}
+ */
+	public function init() {
+		foreach ($this->records as $k => $record) {
+			$email = strtolower($record['first_name'] . '@' . $record['last_name'] . '.com');
+			$this->records[$k] += array(
+				'email' => $email,
+				'password' => md5($email)
+			);
+		}
+		parent::init();
+	}
 
 }

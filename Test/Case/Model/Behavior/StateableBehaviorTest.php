@@ -126,7 +126,7 @@ class StateableBehaviorTest extends CommonTestCase {
 
 		// Do not validate `is_paid` state value.
 		$this->Invoice->id = 2;
-		$result = $this->Invoice->changeIsPaid('paid', false);
+		$result = $this->Invoice->changeIsPaid(3, false);
 		$this->assertTrue($result);
 		$this->assertEqual($this->Invoice->id, 2);
 

@@ -3,7 +3,7 @@
  * CommonTestDetailableUserFixture
  *
  */
-class CommonTestDetailableUserFixture extends CakeTestFixture {
+class CommonTestDetailableUserFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}

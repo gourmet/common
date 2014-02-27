@@ -3,7 +3,7 @@
  * CommonTestCommentablePostFixture
  *
  */
-class CommonTestCommentablePostFixture extends CakeTestFixture {
+class CommonTestCommentablePostFixture extends CommonTestFixture {
 
 /**
  * {@inheritdoc}

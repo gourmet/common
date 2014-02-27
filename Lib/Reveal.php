@@ -278,7 +278,7 @@ class Reveal {
 			return;
 		}
 		foreach (self::$_initialState as $key => $val) {
-			if ($key != '_initialState') {
+			if ($key != '_initialState' && isset(self::${$key})) {
 				self::${$key} = $val;
 			}
 		}
@@ -467,9 +467,9 @@ class Reveal {
 		$params = Router::getParams();
 
 		return (
-			'pages' == $params['controller']
-			&& 'display' == $params['action']
-			&& in_array('home', $params['pass'])
+			!empty($params['controller']) && 'pages' == $params['controller']
+			&& !empty($params['action']) && 'display' == $params['action']
+			&& !empty($params['pass']) && in_array('home', (array) $params['pass'])
 		);
 	}
 
@@ -482,8 +482,8 @@ class Reveal {
 		$params = Router::getParams();
 
 		return (
-			'users' == $params['controller']
-			&& 'login' == $params['action']
+			!empty($params['controller']) && 'users' == $params['controller']
+			&& !empty($params['action']) && 'login' == $params['action']
 		);
 	}
 
