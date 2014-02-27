@@ -278,7 +278,7 @@ class Reveal {
 			return;
 		}
 		foreach (self::$_initialState as $key => $val) {
-			if ($key != '_initialState') {
+			if ($key != '_initialState' && isset(self::${$key})) {
 				self::${$key} = $val;
 			}
 		}
