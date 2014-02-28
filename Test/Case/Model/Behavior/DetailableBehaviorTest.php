@@ -7,6 +7,8 @@ class CommonTestDetailableUser extends CommonAppModel {
 
 	public $actsAs = array('Common.Detailable');
 
+	public $hasMany = array('CommonTestDetailableBook' => array('foreignKey' => 'user_id'));
+
 	public $detailSchema = array(
 		'user' => array(
 			'fname' => array('type' => 'string', 'length' => 16),
@@ -30,6 +32,7 @@ class DetailableBehaviorTest extends CommonTestCase {
  */
 	public $fixtures = array(
 		'plugin.common.common_detail_model',
+		'plugin.common.common_test_detailable_book',
 		'plugin.common.common_test_detailable_user',
 	);
 
@@ -133,4 +136,27 @@ class DetailableBehaviorTest extends CommonTestCase {
 		$this->assertEqual($result, $expected);
 	}
 
+	public function testAfterSaveTriggeredBySaveAll() {
+		$detailModel = $this->User->alias . 'Detail';
+
+		$data = array(
+			$this->User->alias => array('email' => 'test@example.com'),
+			$detailModel => array('user' => array('fname' => 'test', 'lname' => 'example')),
+			'CommonTestDetailableBook' => array(array('name' => 'Test Book')),
+		);
+
+		$this->User->saveAll($data);
+
+		$expected = 2;
+		$result = $this->User->{$detailModel}->find('count', array('conditions' => array('foreign_model' => $this->User->alias, 'foreign_key' => $this->User->id)));
+		$this->assertEqual($result, $expected);
+
+
+		$data[$this->User->alias]['email'] = 'anothertest@example.com';
+		$this->User->saveAll($data, array('validate' => false));
+
+		$expected = 2;
+		$result = $this->User->{$detailModel}->find('count', array('conditions' => array('foreign_model' => $this->User->alias, 'foreign_key' => $this->User->id)));
+		$this->assertEqual($result, $expected);
+	}
 }

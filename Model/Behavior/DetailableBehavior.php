@@ -105,11 +105,31 @@ class DetailableBehavior extends ModelBehavior {
 	public function afterSave(Model $Model, $created = false) {
 		$DetailModel = ClassRegistry::init($this->settings[$Model->alias]['alias']);
 
+		// Reset DetailModel data that was unset before validation.
+		if (!empty($this->__dataToSave[$Model->alias])) {
+			$Model->data[$DetailModel->alias] = $this->__dataToSave[$Model->alias];
+		}
+
 		if ($created && empty($Model->data[$DetailModel->alias]) && false === $this->detailsCreateDefaults($Model)) {
 			return false;
 		}
 
 		$this->detailsSaveSections($Model);
+
+		return true;
+	}
+
+/**
+ * {@inheritdoc}
+ */
+	public function beforeValidate(Model $Model) {
+		$DetailModel = ClassRegistry::init($this->settings[$Model->alias]['alias']);
+
+		// Unset DetailModel data so it is not included in `Model::validateMany()`.
+		if (!empty($Model->data[$DetailModel->alias])) {
+			$this->__dataToSave[$Model->alias] = $Model->data[$DetailModel->alias];
+			unset($Model->data[$DetailModel->alias]);
+		}
 
 		return true;
 	}
@@ -280,7 +300,7 @@ class DetailableBehavior extends ModelBehavior {
 				}
 
 				$data += array('value' => $val);
-				if (!$DetailModel->save($data, false)) {
+				if (!$DetailModel->save($data, array('validate' => false, 'bypass' => false))) {
 					return false;
 				}
 			}
