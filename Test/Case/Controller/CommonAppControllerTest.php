@@ -278,6 +278,14 @@ class CommonAppControllerTest extends CommonTestCase {
 
 	public function testLog() {
 		$stream = CakeLog::stream('error');
+		if (!$stream) {
+			CakeLog::config('error', array(
+				'engine' => 'FileLog',
+				'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
+				'file' => 'error',
+			));
+			$stream = CakeLog::stream('error');
+		}
 		$engine = get_class($stream);
 		$config = array_merge($stream->config(), compact('engine'));
 
