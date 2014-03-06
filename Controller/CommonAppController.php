@@ -158,6 +158,7 @@ class CommonAppController extends Controller {
 		if (!empty($options['plugin']) && CakePlugin::loaded($options['plugin'])) {
 			$element = $options['plugin'] . '.' . $element;
 			$elementPath = CakePlugin::path($options['plugin']) . $elementPath;
+			unset($options['plugin']);
 		}
 
 		if (!is_file($elementPath)) {
