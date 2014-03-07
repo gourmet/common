@@ -162,7 +162,7 @@ class CommonAppController extends Controller {
 		}
 
 		if (!is_file($elementPath)) {
-			$element = $defaults['element'];
+			$element = $defaults['plugin'] . '.' . $defaults['element'];
 		}
 
 		// Redirect URL
