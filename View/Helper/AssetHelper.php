@@ -56,7 +56,7 @@ class AssetHelper extends CommonAppHelper {
 /**
  * {@inheritdoc}
  */
-	public function afterRender() {
+	public function afterRender($viewFile) {
 		$this->render();
 	}
 
