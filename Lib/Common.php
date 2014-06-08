@@ -15,6 +15,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('ClassRegistry', 'Utility');
 App::uses('Reveal', 'Common.Lib');
 
 /**
