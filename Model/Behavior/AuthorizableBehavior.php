@@ -244,14 +244,14 @@ class AuthorizableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		$this->_cntSkippedAuthorizable($Model);
 	}
 
 /**
  * {@inheritdoc}
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		$this->_cntSkippedAuthorizable($Model);
 	}
 
@@ -352,14 +352,14 @@ class AuthorizableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		return $this->beforeSave($Model);
 	}
 
 /**
  * {@inheritdoc}
  */
-	public function beforeSave(Model $Model) {
+	public function beforeSave(Model $Model, $options = array()) {
 		$action = $Model->getID() ? 'update' : 'create';
 		$field = $this->settings[$Model->alias]['owner']['path'];
 

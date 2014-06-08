@@ -45,7 +45,7 @@ class FilterableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		foreach (array_keys($this->settings[$Model->alias]) as $field) {
 			foreach (array_keys(Hash::extract($results, '{n}.' . $Model->alias . '.' . $field)) as $key) {
 				unset($results[$key][$Model->alias][$field]);
@@ -55,7 +55,7 @@ class FilterableBehavior extends ModelBehavior {
 		return $results;
 	}
 
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		if (empty($Model->data[$Model->alias])) {
 			return;
 		}

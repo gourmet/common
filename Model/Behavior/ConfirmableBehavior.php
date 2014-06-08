@@ -27,7 +27,7 @@ class ConfirmableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		$ModelValidator = $Model->validator();
 		foreach ($Model->data[$Model->alias] as $field => $value) {
 			if (!preg_match('/^([a-z0-9_]+)_confirm$/i', $field, $match)) {
