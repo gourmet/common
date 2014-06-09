@@ -83,7 +83,7 @@ class DetailableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function afterFind(Model $Model, $results, $primary) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		$DetailModel = ClassRegistry::init($this->settings[$Model->alias]['alias']);
 
 		foreach ($results as $k => $result) {
