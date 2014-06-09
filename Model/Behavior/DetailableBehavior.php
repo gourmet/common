@@ -31,7 +31,7 @@ class DetailableBehavior extends ModelBehavior {
 
 /**
  * Data holder. Used to bypass `Model::validateMany`.
- * 
+ *
  * @var array
  */
 	private $__data = array();
@@ -109,7 +109,7 @@ class DetailableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function afterSave(Model $Model, $created = false) {
+	public function afterSave(Model $Model, $created = false, $options = array()) {
 		$DetailModel = ClassRegistry::init($this->settings[$Model->alias]['alias']);
 
 		// Reset DetailModel data that was unset before validation.
@@ -130,7 +130,7 @@ class DetailableBehavior extends ModelBehavior {
 /**
  * {@inheritdoc}
  */
-	public function beforeValidate(Model $Model) {
+	public function beforeValidate(Model $Model, $options = array()) {
 		$DetailModel = ClassRegistry::init($this->settings[$Model->alias]['alias']);
 
 		// Unset DetailModel data so it is not included in `Model::validateMany()`.
