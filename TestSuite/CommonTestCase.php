@@ -592,7 +592,7 @@ abstract class CommonTestCase extends CakeTestCase {
 /**
  * {@inheritdoc}
  */
-	public function getMockForModel($model, $methods = array(), $config = null, $registry = false) {
+	public function getMockForModel($model, $methods = array(), $config = array(), $registry = false) {
 		$modelOriginal = ClassRegistry::init($model);
 		$modelMock = parent::getMockForModel($model, $methods, $config);
 
