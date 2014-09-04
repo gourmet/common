@@ -1,5 +1,6 @@
 <?php
 
+App::uses('CakeResponse', 'Network');
 App::uses('CommonTestCase', 'Common.TestSuite');
 
 /**
